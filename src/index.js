@@ -318,6 +318,7 @@ export default class CanvasDraw extends PureComponent {
         this.handleWheel,
         makePassiveEventOption()
       );
+    window.addEventListener('keypress', this.handleKeyPress);
   }
 
   componentDidUpdate(prevProps) {
@@ -350,6 +351,8 @@ export default class CanvasDraw extends PureComponent {
     this.canvasObserver.unobserve(this.canvasContainer);
     this.canvas.interface &&
       this.canvas.interface.removeEventListener("wheel", this.handleWheel);
+
+    window.removeEventListener("keypress", this.handleKeyPress)
   };
 
   render() {
@@ -374,6 +377,7 @@ export default class CanvasDraw extends PureComponent {
           const isInterface = name === "interface";
           return (
             <canvas
+              id='game'
               key={name}
               ref={(canvas) => {
                 if (canvas) {
@@ -405,6 +409,15 @@ export default class CanvasDraw extends PureComponent {
   handleWheel = (e) => {
     this.interactionSM = this.interactionSM.handleMouseWheel(e, this);
   };
+
+  handleKeyPress = (e) => {
+    this.isDrawing = !this.isDrawing;
+    if (this.isDrawing) {
+      this.handleDrawStart(e)
+    }else{
+      this.handleDrawEnd(e)
+    }
+  }
 
   handleDrawStart = (e) => {
     this.interactionSM = this.interactionSM.handleDrawStart(e, this);
